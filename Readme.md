@@ -22,3 +22,7 @@ https://github.com/jona-sassenhagen/mne_workshop_amsterdam
 
 https://www.youtube.com/watch?v=IYuAPisoUeI&list=PLXtvZiGkmNVvPS0N9UNBVkIFe0_0t_Nqt
 
+
+with PyTorch, motor imagery: hands vs feet
+
+https://github.com/mne-tools/mne-torch/blob/master/demo_eeg_csp.py
