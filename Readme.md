@@ -17,6 +17,9 @@ https://mne.tools/1.0/auto_tutorials/index.html
 https://mne.tools/1.0/auto_examples/decoding/decoding_csp_eeg.html
 
 
+https://neuro.inf.unibe.ch/AlgorithmsNeuroscience/Tutorial_files/Introduction.html#Algorithms-in-neuroscience
+
+
 https://github.com/jona-sassenhagen/mne_workshop_amsterdam
 
 
