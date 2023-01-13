@@ -43,6 +43,13 @@ EEG Feature Extraction
 https://www.youtube.com/watch?v=rgG9t6DrBAk
 
 
+
+https://www.youtube.com/watch?v=AjMdirPPnQQ
+
+
+https://docs.google.com/presentation/d/1KHbTb6H09P7SWbL6a8ryK1QKINZb5FbTMNx-DMoqaEY/edit#slide=id.p
+
+
 # Question
 
 https://cdn.intra.42.fr/pdf/pdf/60845/en.subject.pdf, page5
