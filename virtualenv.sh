@@ -8,7 +8,7 @@ source ft_env/bin/activate   #activate env
 pip install pandas
 pip install numpy
 pip install matplotlib
-#pip install scikit-learn
+pip install scikit-learn
 pip install mne
 
 
