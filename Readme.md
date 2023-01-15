@@ -51,14 +51,11 @@ https://docs.google.com/presentation/d/1KHbTb6H09P7SWbL6a8ryK1QKINZb5FbTMNx-DMoq
 
 
 # Question
-
+[total-perspective-vortex] In the subject, page5, first paragraph, second sentence. 
 https://cdn.intra.42.fr/pdf/pdf/60845/en.subject.pdf, page5
 
-The data was mesured during a motor imagery experiment, where people had to do or imagine a hand or feet movement.
+The data was measured during a motor imagery experiment, where people had to do or imagine a hand or feet movement.
 
-The above sentence should be edited like 1 or 2. Which is the right one?
+I am wondering if what you meant was using only imagery data. 
 
-1. The data was mesured during a motor movement/imagery experiment, where people had to do or imagine a hand or feet movement.
-
-
-2. The data was mesured during a motor imagery experiment, where people had to do or imagine a hand or feet movement.
+The data was measured during a motor imagery experiment, where people had to imagine a hand or feet movement.
