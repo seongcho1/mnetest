@@ -52,7 +52,7 @@ https://docs.google.com/presentation/d/1KHbTb6H09P7SWbL6a8ryK1QKINZb5FbTMNx-DMoq
 
 # Question
 [total-perspective-vortex] In the subject, page5, first paragraph, second sentence. 
-https://cdn.intra.42.fr/pdf/pdf/60845/en.subject.pdf, page5
+https://cdn.intra.42.fr/pdf/pdf/60845/en.subject.pdf
 
 The data was measured during a motor imagery experiment, where people had to do or imagine a hand or feet movement.
 
