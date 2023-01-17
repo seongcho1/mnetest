@@ -29,6 +29,9 @@ https://www.youtube.com/watch?v=IYuAPisoUeI&list=PLXtvZiGkmNVvPS0N9UNBVkIFe0_0t_
 # References
 
 
+https://pyriemann.readthedocs.io/en/latest/auto_examples/motor-imagery/plot_single.html
+
+
 with PyTorch, motor imagery: hands vs feet
 
 https://github.com/mne-tools/mne-torch/blob/master/demo_eeg_csp.py
