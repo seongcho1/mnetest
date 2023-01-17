@@ -28,6 +28,8 @@ https://www.youtube.com/watch?v=IYuAPisoUeI&list=PLXtvZiGkmNVvPS0N9UNBVkIFe0_0t_
 
 # References
 
+http://learn.neurotechedu.com/machinelearning/#machine-learning-for-brain-computer-interfaces
+
 
 https://pyriemann.readthedocs.io/en/latest/auto_examples/motor-imagery/plot_single.html
 
