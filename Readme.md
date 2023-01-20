@@ -8,6 +8,13 @@ https://archive.physionet.org/pn4/eegmmidb/
 
 https://physionet.org/content/eegmmidb/1.0.0/
 
+
+https://github.com/mne-tools/mne-python/blob/main/mne/datasets/eegbci/eegbci.py
+
+
+https://braindecode.org/stable/auto_examples/plot_mne_dataset_example.html#sphx-glr-auto-examples-plot-mne-dataset-example-py
+
+
 # Tutorials
 
 
@@ -24,6 +31,15 @@ https://github.com/jona-sassenhagen/mne_workshop_amsterdam
 
 
 https://www.youtube.com/watch?v=IYuAPisoUeI&list=PLXtvZiGkmNVvPS0N9UNBVkIFe0_0t_Nqt
+
+
+https://github.com/NeuroTechX/moabb
+
+
+https://github.com/lkorczowski/BCI-2021-Riemannian-Geometry-workshop/blob/master/notebooks/MOABB-approach.ipynb
+
+
+https://www.kaggle.com/code/shoolpani/eye-blink-detection-using-eegmmidb/notebook?scriptVersionId=59041125
 
 
 # References
@@ -56,6 +72,22 @@ https://www.youtube.com/watch?v=AjMdirPPnQQ
 
 
 https://docs.google.com/presentation/d/1KHbTb6H09P7SWbL6a8ryK1QKINZb5FbTMNx-DMoqaEY/edit#slide=id.p
+
+# References2
+
+https://www.sciencedirect.com/science/article/pii/S1110016821007055
+
+
+https://arro.anglia.ac.uk/id/eprint/706861/1/Selim_2021.pdf
+
+
+https://www.slideshare.net/victorasanza/eeg-signal-clustering-for-motor-and-imaginary-motor-tasks-on-hands-and-feet-85935652
+
+
+
+https://www.google.com/search?rlz=1C9BKJA_enKR930KR930&hl=en-US&sxsrf=AJOqlzWHUsvpLbaAMpi0ZmiND_8S8lDyDA:1674139424923&q=EEG+motor+imagery-classification+GitHub&sa=X&ved=2ahUKEwj2iuit79P8AhVi8zgGHYWOAGUQ1QJ6BAgiEAE&biw=1080&bih=695&dpr=2
+
+
 
 
 # Question
