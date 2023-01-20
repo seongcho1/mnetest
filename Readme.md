@@ -99,3 +99,15 @@ The data was measured during a motor imagery experiment, where people had to do 
 I am wondering if what you meant was using only imagery data. 
 
 The data was measured during a motor imagery experiment, where people had to imagine a hand or feet movement.
+
+
+# shared 
+
+Bandpass filter Burttherworth-IIR, 7-30 Hz
+
+subject -> subjects from eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb
+
+64 channels -> motor cortex area (7 x 3 channels) from pdf/02The EEG Device For Your Project_ Choosing between NeuroSky MindWave, Muse 2, g.tec Unicorn, OpenBCI, Emotiv EPOC+… _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium
+
+Common Average Referencing (CAR) data -= data.mean() from pdf/06Improving Preprocessing Of EEG Data In One Line Of Code With CAR _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf
+
