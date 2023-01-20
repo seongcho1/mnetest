@@ -103,7 +103,7 @@ The data was measured during a motor imagery experiment, where people had to ima
 
 # shared 
 
-Bandpass filter Burttherworth-IIR, 7-30 Hz
+Bandpass filter Burttherworth-IIR, 7-30 Hz from page 7 of https://www.slideshare.net/victorasanza/eeg-signal-clustering-for-motor-and-imaginary-motor-tasks-on-hands-and-feet-85935652
 
 subject -> subjects from eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb
 
