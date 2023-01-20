@@ -105,9 +105,9 @@ The data was measured during a motor imagery experiment, where people had to ima
 
 Bandpass filter Burttherworth-IIR, 7-30 Hz from page 7 of https://www.slideshare.net/victorasanza/eeg-signal-clustering-for-motor-and-imaginary-motor-tasks-on-hands-and-feet-85935652
 
-subject -> subjects from eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb
+subject -> subjects from [eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb,](https://github.com/seongcho1/mnetest/blob/main/eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb) 
 
-64 channels -> motor cortex area (7 x 3 channels) from pdf/02The EEG Device For Your Project_ Choosing between NeuroSky MindWave, Muse 2, g.tec Unicorn, OpenBCI, Emotiv EPOC+… _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium
+64 channels -> motor cortex area (7 x 3 channels) from pdf/02The EEG Device For Your Project_ Choosing between NeuroSky MindWave, Muse 2, g.tec Unicorn, OpenBCI, Emotiv EPOC+… _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf, https://medium.com/the-ultimate-bedroom-bci-guide/a-beginners-guide-to-brain-computer-interfaces-part-2-how-to-choose-the-eeg-device-for-your-eb8d51fa5d66
 
-Common Average Referencing (CAR) data -= data.mean() from pdf/06Improving Preprocessing Of EEG Data In One Line Of Code With CAR _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf
+Common Average Referencing (CAR) data -= data.mean() from pdf/06Improving Preprocessing Of EEG Data In One Line Of Code With CAR _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf, https://medium.com/the-ultimate-bedroom-bci-guide/improving-preprocessing-of-eeg-data-in-one-line-of-code-with-car-a9f7cc52e3fc
 
