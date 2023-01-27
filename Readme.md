@@ -1,6 +1,8 @@
 # EEG Motor Movement/Imagery
 https://www.slideshare.net/DonghyeonKim7/eeg-102812945
 
+https://www.mdpi.com/2079-9292/11/15/2293/pdf
+
 # Data
 
 https://archive.physionet.org/pn4/eegmmidb/
