@@ -1,3 +1,7 @@
+# https://matlab.mathworks.com/
+# seongcho@student.42seoul.kr
+# first captial usual$
+
 from math import pi, cos, sin
 import numpy as np
 from csp import csp
