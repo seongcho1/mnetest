@@ -1,31 +1,30 @@
 import numpy as np
+from scipy import linalg as LA
 
 def csp(X1=None,X2=None,*args,**kwargs):
-    varargin = csp.varargin
-    nargin = csp.nargin
 
     # Error detection
-    if nargin < 2:
-        raise ValueError('Not enough parameters.')
+    # if nargin < 2:
+    #     raise ValueError('Not enough parameters.')
 
     # if length(size(X1)) != 2 or length(size(X2)) != 2:
     #     raise ValueError('The size of trial signals must be [C x T]')
 
     # Compute the covariance matrix of each class
-    S1=np.cov(X1.T)
+    S1=np.cov(np.transpose(X1))
 # csp.m:9
 
-    S2=np.cov(X2.T)
+    S2=np.cov(np.transpose(X2))
 # csp.m:10
 
     # Solve the eigenvalue problem S1·W = l·S2·W
-    W,L=np.eig(S1,S1 + S2,nargout=2)
+    W,L=LA.eig(S1, S1 + S2)
 # csp.m:12
 
-    lambda_=np.diag(L)
+    lambda_=LA.eigvals(L)
 # csp.m:13
 
-    A=(np.inv(W)).T
+    A=np.transpose(np.linalg.inv(W))
 # csp.m:14
 
     # Further notes:
