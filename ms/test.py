@@ -22,8 +22,8 @@ if __name__ == '__main__':
     # r = np.array([[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8],[0.9,1.0]])
     r = np.array([[0.1,0.2],[0.3,0.4],[0.5,0.6]])
     r2 = r * np.tile(sigma,(N,1))
-
-    data0 = np.matmul(np.tile(mu,(N,1)) + r2, rot1)
+    r3 = np.tile(mu,(N,1)) + r2
+    data0 = np.matmul(r3, rot2)
 
     print(data0)
     exit()
