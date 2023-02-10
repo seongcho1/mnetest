@@ -19,35 +19,37 @@ if __name__ == '__main__':
     theta=np.dot(15, pi) / 180
     rot2=np.array([[cos(theta),- sin(theta)],[sin(theta),cos(theta)]])
 
-    r = np.random.randn(N,2)
+    #r1 = np.random.randn(N,2)
+    #r2 = np.random.randn(N,2)
     # r = np.tile(np.array([0.1,0.1]), (N,1))
     # r = np.array([[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8],[0.9,1.0]])
     # r = np.array([[0.1,0.2],[0.3,0.4],[0.5,0.6]])
-    r2 = r * np.tile(sigma,(N,1))
-
+    #r2 = r1 * np.tile(sigma,(N,1))
     #r3 = np.tile(mu,(N,1)) + r2
-    #r3 = np.tile(mu,(N,1)) + r * np.tile(sigma,(N,1))
-    r3 = np.tile(mu,(N,1)) + np.random.rand(N,2) * np.tile(sigma,(N,1))
+
+    rd_1 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
+    rd_2 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
+    #rd = np.tile(mu,(N,1)) + np.random.rand(N,2) * np.tile(sigma,(N,1))
 
     #data9 = np.dot(r3, rot2)
     #data0 = (np.dot(rot2, r3.T)).T
 
     #data1 = (rot1*(repmat(mu,N,1)+ randn(N,2).*repmat(sigma,N,1))')';
-    #data1 = (np.dot(rot1, r3.T)).T
-    data1 = (np.dot(rot1, (np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))).T)).T
+    data1 = (np.dot(rot1, rd_1.T)).T
+    #data1 = (np.dot(rot1, (np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))).T)).T
     #data2 = (rot2*(repmat(mu,N,1)+ randn(N,2).*repmat(sigma,N,1))')';
-    #data2 = (np.dot(rot2, r3.T)).T
-    data2 = (np.dot(rot2, (np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))).T)).T
+    data2 = (np.dot(rot2, rd_2.T)).T
+    #data2 = (np.dot(rot2, (np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))).T)).T
 
     d1 = np.dot(rot1, [[1],[0]])
     d2 = np.dot(rot2, [[1],[0]])
 
     # print(data2)
-    # print(d1)
-    # print(d2)
+    print(d1)
+    print(d2)
 
     #print(np.array([0, *d1[0]]) * 3)
-    print(np.array([0, *d1[0]]) * np.max(data1))
+    #print(np.array([0, *d1[0]]) * np.max(data1))
     print('-'*42)
     # print(*zip(*data2))
     # print('-'*42)
@@ -63,8 +65,8 @@ if __name__ == '__main__':
     x2, y2 = data2.T
     plt.scatter(x2, y2, c='orange', alpha=0.3, label='class 2')
 
-    plt.plot(np.array([0, d1[0]]) * np.max(data1), np.array([0, d1[1]]) *np.max(data1), linewidth=3, label='d1')
-    plt.plot(np.array([0, d2[0]]) * np.max(data2), np.array([0, d2[1]]) *np.max(data2), linewidth=3, label='d2')
+    plt.plot(np.array([0, *d1[0]])* np.max(data1), np.array([0, *d1[1]]) *np.max(data1), linewidth=3, label='d1')
+    plt.plot(np.array([0, *d2[0]]) * np.max(data2), np.array([0, *d2[1]]) *np.max(data2), linewidth=3, label='d2')
 
     #plt.plot(multiply(concat([0,d1(1)]),max(ravel(data1))),multiply(concat([0,d1(2)]),max(ravel(data1))),'linewidth',2)
     #plt.plot(multiply(concat([0,d2(1)]),max(ravel(data2))),multiply(concat([0,d2(2)]),max(ravel(data2))),'linewidth',2)
