@@ -11,25 +11,16 @@ def csp(X1=None,X2=None,*args,**kwargs):
     #     raise ValueError('The size of trial signals must be [C x T]')
 
     # Compute the covariance matrix of each class
-    S1=np.cov(np.transpose(X1))
-# csp.m:9
-
-    S2=np.cov(np.transpose(X2))
-# csp.m:10
+    S1=np.cov(X1)
+    S2=np.cov(X2)
 
     # Solve the eigenvalue problem S1·W = l·S2·W
-    W,L=LA.eig(S1, S1 + S2)
-# csp.m:12
-
-    lambda_=LA.eigvals(L)
-# csp.m:13
-
-    A=np.transpose(np.linalg.inv(W))
-# csp.m:14
+    #W,L=LA.eig(S1, S1+S2)
+    l,W=LA.eigh(S1, S1+S2)
+    l = np.round(l, 5)
+    A=(np.linalg.inv(W)).T
 
     # Further notes:
     #   - CSP filtered signal is computed as: X_csp = W'*X;
-    return W, lambda_, A
+    return W, l, A
 
-if __name__ == '__main__':
-    pass
