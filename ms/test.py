@@ -27,8 +27,10 @@ if __name__ == '__main__':
     #r2 = r1 * np.tile(sigma,(N,1))
     #r3 = np.tile(mu,(N,1)) + r2
 
-    rd_1 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
-    rd_2 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
+    # rd_1 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
+    # rd_2 = np.tile(mu,(N,1)) + np.random.randn(N,2) * np.tile(sigma,(N,1))
+    rd_1 = mu + np.random.randn(N,2) * sigma
+    rd_2 = mu + np.random.randn(N,2) * sigma
     #rd = np.tile(mu,(N,1)) + np.random.rand(N,2) * np.tile(sigma,(N,1))
 
     #data9 = np.dot(r3, rot2)
