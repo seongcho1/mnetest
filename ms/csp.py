@@ -23,6 +23,8 @@ def csp(X1=None,X2=None,*args,**kwargs):
     l = np.round(l, 5)
     A=(np.linalg.inv(W)).T
 
+    print(f"eigenvalue={l}, eigenvector.shape={W.shape}")
+
     # Further notes:
     #   - CSP filtered signal is computed as: X_csp = W'*X;
     return W, l, A
