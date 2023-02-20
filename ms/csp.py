@@ -14,6 +14,9 @@ def csp(X1=None,X2=None,*args,**kwargs):
     S1=np.cov(X1)
     S2=np.cov(X2)
 
+    print(f"X1.shape={X1.shape}, S1.shape={S1.shape}")
+    print(f"X2.shape={X2.shape}, S2.shape={S2.shape}")
+
     # Solve the eigenvalue problem S1·W = l·S2·W
     #W,L=LA.eig(S1, S1+S2)
     l,W=LA.eigh(S1, S1+S2)

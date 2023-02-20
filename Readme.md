@@ -93,23 +93,91 @@ https://www.google.com/search?rlz=1C9BKJA_enKR930KR930&hl=en-US&sxsrf=AJOqlzWHUs
 
 
 # Question
-[total-perspective-vortex] In the subject, page5, first paragraph, second sentence. 
+[total-perspective-vortex] In the subject, page5, first paragraph, second sentence.
 https://cdn.intra.42.fr/pdf/pdf/60845/en.subject.pdf
 
 The data was measured during a motor imagery experiment, where people had to do or imagine a hand or feet movement.
 
-I am wondering if what you meant was using only imagery data. 
+I am wondering if what you meant was using only imagery data.
 
 The data was measured during a motor imagery experiment, where people had to imagine a hand or feet movement.
 
 
-# shared 
+# shared
 
 Bandpass filter Burttherworth-IIR, 7-30 Hz from page 7 of https://www.slideshare.net/victorasanza/eeg-signal-clustering-for-motor-and-imaginary-motor-tasks-on-hands-and-feet-85935652
 
-subject -> subjects from [eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb](https://github.com/seongcho1/mnetest/blob/main/eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb) 
+subject -> subjects from [eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb](https://github.com/seongcho1/mnetest/blob/main/eeg_motor_imagery_002_Motor_imagery_decoding_from_EEG_data_using_the_Common_Spatial_Pattern_(CSP).ipynb)
 
 64 channels -> motor cortex area (7 x 3 channels) from [pdf/02The EEG Device For Your Project_ Choosing between NeuroSky MindWave, Muse 2, g.tec Unicorn, OpenBCI, Emotiv EPOC+… _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf](https://medium.com/the-ultimate-bedroom-bci-guide/a-beginners-guide-to-brain-computer-interfaces-part-2-how-to-choose-the-eeg-device-for-your-eb8d51fa5d66)
 
 Common Average Referencing (CAR) data -= data.mean() from [pdf/06Improving Preprocessing Of EEG Data In One Line Of Code With CAR _ by Tim de Boer _ A Beginner’s Guide to Brain-Computer Interfaces _ Medium.pdf](https://medium.com/the-ultimate-bedroom-bci-guide/improving-preprocessing-of-eeg-data-in-one-line-of-code-with-car-a9f7cc52e3fc)
 
+
+# data info
+
+
+```
+#https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py
+
+# raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
+# labels, epochs = fetch_events(raw)
+
+print(epochs.tmin, epochs.tmax)
+#-1.0 4.0
+
+#Read epochs (train will be done only between 1 and 2)
+epochs_train = epochs.copy().crop(tmin=1., tmax=2.) #-1~4 to 1~2
+epochs_data = epochs.get_data()
+epochs_data_train = epochs_train.get_data()
+
+print(labels.shape)
+#(45,)
+print(labels)
+# [0 1 0 1 0 1 1 0 1 0 1 0 1 0 1 0 1 1 0 1 0 1 0 1 0 1 0 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 0 1 0]
+
+print(type(epochs))
+#<class 'mne.epochs.Epochs'>
+print(type(epochs_data))
+#<class 'numpy.ndarray'>
+print(epochs_data.shape)
+
+#data for 45 events and 801 original time points ...
+#45 matching events found
+#64-channel EEG signals
+#801 original time points
+
+#(45, 64, 801)
+
+print(type(epochs_train))
+#<class 'mne.epochs.Epochs'>
+print(type(epochs_data_train))
+#<class 'numpy.ndarray'>
+print(epochs_data_train.shape)
+#(45, 64, 161)
+
+#epochs_data_train
+
+45개 events가 class0 23개, class1 22개로 나뉨
+----------------------------------------
+_concat_cov: x_class.shape0=(23, 64, 161)
+_concat_cov: x_class.shape1=(64, 23, 161)
+_concat_cov: x_class.shape2=(64, 3703)
+_concat_cov: x_class.shape3=(64, 3703), x_class.T.shape=(3703, 64), x_class.T.conj().shape=(3703, 64)
+----------------------------------------
+_concat_cov: x_class.shape0=(22, 64, 161)
+_concat_cov: x_class.shape1=(64, 22, 161)
+_concat_cov: x_class.shape2=(64, 3542)
+_concat_cov: x_class.shape3=(64, 3542), x_class.T.shape=(3542, 64), x_class.T.conj().shape=(3542, 64)
+----------------------------------------
+
+x_class0.shape3=(64, 3703), cov0.shape=(64, 64)
+x_class1.shape3=(64, 3542), cov1.shape=(64, 64)
+
+vs
+
+X1.shape=(2, 500), S1.shape=(2, 2)
+X2.shape=(2, 500), S2.shape=(2, 2)
+
+----------------------------------------
+```
