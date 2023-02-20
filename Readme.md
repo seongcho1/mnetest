@@ -171,10 +171,10 @@ _concat_cov: x_class.shape2=(64, 3542)
 _concat_cov: x_class.shape3=(64, 3542), x_class.T.shape=(3542, 64), x_class.T.conj().shape=(3542, 64)
 ----------------------------------------
 
+eegbci_training+predict0*.ipynb CSPTEST2 vs ms/csp.py
+
 x_class0.shape3=(64, 3703), cov0.shape=(64, 64)
 x_class1.shape3=(64, 3542), cov1.shape=(64, 64)
-
-vs
 
 X1.shape=(2, 500), S1.shape=(2, 2)
 X2.shape=(2, 500), S2.shape=(2, 2)
