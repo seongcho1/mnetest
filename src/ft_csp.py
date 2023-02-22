@@ -2,10 +2,13 @@ import copy as cp
 # from mne.cov import _regularized_covariance
 # from mne.fixes import pinv
 # from mne.utils import fill_doc, _validate_type, copy_doc
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.base import BaseEstimator, TransformerMixin
 
 # https://towardsdatascience.com/customizing-sklearn-pipelines-transformermixin-a54341d8d624
-class CSPTEST2(TransformerMixin, BaseEstimator):
+# https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py
+class FT_CSP(TransformerMixin, BaseEstimator):
     """M/EEG signal decomposition using the Common Spatial Patterns (CSP).
     This class can be used as a supervised decomposition to estimate spatial
     filters for feature extraction. CSP in the context of EEG was first
@@ -74,11 +77,13 @@ class CSPTEST2(TransformerMixin, BaseEstimator):
     .. footbibliography::
     """
 
+
     def __init__(self, n_components=4, reg=None, log=None, cov_est='concat',
                  transform_into='average_power', norm_trace=False,
                  cov_method_params=None, rank=None,
                  component_order='mutual_info'):
         # Init default CSP
+        self.PRT = False
         if not isinstance(n_components, int):
             raise ValueError('n_components must be an integer.')
         self.n_components = n_components
@@ -121,38 +126,49 @@ class CSPTEST2(TransformerMixin, BaseEstimator):
         self : instance of CSP
             Returns the modified instance.
         """
-        print("\n" + ">"*42*2)
-        print(f">>>csp.fit(X, y), X.shape={X.shape}, y.shape={y.shape}<<<")
-        print("<"*42*2 + "\n")
+
+        if self.PRT:
+            print("\n" + ">"*42*2)
+            print(f">>>csp.fit(X, y), X.shape={X.shape}, y.shape={y.shape}<<<")
+            print("<"*42*2 + "\n")
 
         self._check_Xy(X, y)
-        print("X.shape", X.shape)
-        print("len(y)", len(y), y)
+
+        if self.PRT:
+            print("X.shape", X.shape)
+            print("len(y)", len(y), y)
 
         self._classes = np.unique(y)
-        print("_classes", self._classes)
+        if self.PRT:
+            print("_classes", self._classes)
         n_classes = len(self._classes)
         if n_classes < 2:
             raise ValueError("n_classes must be >= 2.")
 
         covs, sample_weights = self._compute_covariance_matrices(X, y)
-        print(f"covs.shape={covs.shape}, sample_weight={sample_weights}")
+        if self.PRT:
+            print(f"covs.shape={covs.shape}, sample_weight={sample_weights}")
 
         eigen_vectors, eigen_values = self._decompose_covs(covs,
                                                            sample_weights)
-        print(f"eigenvalues.shape={eigen_values.shape}, eigenvectors.shape={eigen_vectors.shape}\n")
-        print(f"eigenvalues={eigen_values}, eigenvectors.shape={eigen_vectors.shape}\n")
+
+        if self.PRT:
+            print(f"eigenvalues.shape={eigen_values.shape}, eigenvectors.shape={eigen_vectors.shape}\n")
+            print(f"eigenvalues={eigen_values}, eigenvectors.shape={eigen_vectors.shape}\n")
 
         #np.argsort(np.abs(eigen_values - 0.5))[::-1]
-        print(f"np.abs(eigen_values - 0.5)={np.abs(eigen_values - 0.5)}\n")
-        print(f"np.argsort(np.abs(eigen_values - 0.5))={np.argsort(np.abs(eigen_values - 0.5))}\n")
-        print(f"np.argsort(np.abs(eigen_values - 0.5))[::-1]={np.argsort(np.abs(eigen_values - 0.5))[::-1]}\n")
+        if self.PRT:
+            print(f"np.abs(eigen_values - 0.5)={np.abs(eigen_values - 0.5)}\n")
+            print(f"np.argsort(np.abs(eigen_values - 0.5))={np.argsort(np.abs(eigen_values - 0.5))}\n")
+            print(f"np.argsort(np.abs(eigen_values - 0.5))[::-1]={np.argsort(np.abs(eigen_values - 0.5))[::-1]}\n")
 
         ix = self._order_components(covs, sample_weights, eigen_vectors, eigen_values)
-        print(f"ix={ix}\n")
+        if self.PRT:
+            print(f"ix={ix}\n")
 
         eigen_vectors = eigen_vectors[:, ix]
-        print(f"eigenvectors2.shape={eigen_vectors.shape}")
+        if self.PRT:
+            print(f"eigenvectors2.shape={eigen_vectors.shape}")
 
         self.filters_ = eigen_vectors.T
         self.patterns_ = pinv2(eigen_vectors)
@@ -182,9 +198,10 @@ class CSPTEST2(TransformerMixin, BaseEstimator):
             CSP features averaged over time and shape (n_epochs, n_sources)
 
         """
-        print("\n" + ">"*42*2)
-        print(f">>>csp.transform(X), X.shape={X.shape}<<<")
-        print("<"*42*2 + "\n")
+        if self.PRT:
+            print("\n" + ">"*42*2)
+            print(f">>>csp.transform(X), X.shape={X.shape}<<<")
+            print("<"*42*2 + "\n")
 
         if not isinstance(X, np.ndarray):
             raise ValueError("X should be of type ndarray (got %s)." % type(X))
@@ -311,6 +328,7 @@ class CSPTEST2(TransformerMixin, BaseEstimator):
             cmap=cmap, vlim=vlim, cnorm=cnorm, colorbar=colorbar,
             cbar_fmt=cbar_fmt, units=units, axes=axes, time_format=name_format,
             nrows=nrows, ncols=ncols, show=show)
+        fig.show()
 
     def _compute_covariance_matrices(self, X, y):
         _, n_channels, _ = X.shape
@@ -326,34 +344,39 @@ class CSPTEST2(TransformerMixin, BaseEstimator):
             covs.append(cov)
             sample_weights.append(weight)
 
-        print(f"===_compute_covariance_matrices===, sample_weights={sample_weights}")
+        if self.PRT:
+            print(f"===_compute_covariance_matrices===, sample_weights={sample_weights}")
         return np.stack(covs), np.array(sample_weights)
 
     def _concat_cov(self, x_class, ddof=1):
         """Concatenate epochs before computing the covariance."""
         _, n_channels, _ = x_class.shape
-        print(f"_concat_cov: x_class.shape0={x_class.shape}")
+        if self.PRT:
+            print(f"_concat_cov: x_class.shape0={x_class.shape}")
         x_class = np.transpose(x_class, [1, 0, 2])
-        print(f"_concat_cov: x_class.shape1={x_class.shape}")
+        if self.PRT:
+            print(f"_concat_cov: x_class.shape1={x_class.shape}")
         x_class = x_class.reshape(n_channels, -1)
-        print(f"_concat_cov: x_class.shape2={x_class.shape}")
+        if self.PRT:
+            print(f"_concat_cov: x_class.shape2={x_class.shape}")
         # cov0 = _regularized_covariance(
         #     x_class, reg=self.reg, method_params=self.cov_method_params,
         #     rank=self.rank)
         #cov1 = np.cov(x_class, bias=False, ddof=1)
         #cov1 = np.cov(x_class, bias=1)
         cov1 = np.cov(x_class)
-
-        print(f"_concat_cov: x_class.shape3={x_class.shape}, x_class.T.shape={x_class.T.shape}, x_class.T.conj().shape={x_class.T.conj().shape}")
+        if self.PRT:
+            print(f"_concat_cov: x_class.shape3={x_class.shape}, x_class.T.shape={x_class.T.shape}, x_class.T.conj().shape={x_class.T.conj().shape}")
 
         cov = np.dot(x_class, x_class.T.conj()) / float(x_class.shape[1] - ddof)
-
-        print(f"_concat_cov: cov.shape={cov.shape}")
+        if self.PRT:
+            print(f"_concat_cov: cov.shape={cov.shape}")
 
         weight = x_class.shape[0]
 
-        print(f"==_concat_cov==, n_channels={n_channels}, weight={weight}")
-        print(f"compare cov, {cov[0][0]}, cov1 {cov1[0][0]}, {abs(cov[0][0] - cov1[0][0]) < 0.0000001}")
+        if self.PRT:
+            print(f"==_concat_cov==, n_channels={n_channels}, weight={weight}")
+            print(f"compare cov, {cov[0][0]}, cov1 {cov1[0][0]}, {abs(cov[0][0] - cov1[0][0]) < 0.0000001}")
         return cov, weight
 
     def _decompose_covs(self, covs, sample_weights):
