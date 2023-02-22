@@ -167,10 +167,21 @@ def training():
 
 
 if __name__ == "__main__":
-    DATA_DIR = "./data/motorimagery/mne-data"
+    DATA_DIR = "mne_data"
     SUBJECTS = [2]
     RUNS1 = [6, 10, 14]  # motor imagery: hands vs feet
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
-    training()
+    # training()
+
+    # raw_fnames=raw_filenames()
+
+    raw_fnames = []
+    for subject in SUBJECTS:
+      subject_raw_fnames = eegbci.load_data(subject, RUNS)
+      print(subject_raw_fnames)
+      raw_fnames.extend(subject_raw_fnames)
+
+    # raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
+    # labels, epochs = fetch_events(raw)
