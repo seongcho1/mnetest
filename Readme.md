@@ -118,6 +118,9 @@ Common Average Referencing (CAR) data -= data.mean() from [pdf/06Improving Prepr
 
 
 ```
+#pip list --format=freeze > requirements.txt
+#pip install -r requirements.txt
+
 #https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py
 
 # raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))

@@ -106,7 +106,7 @@ def raw_filenames():
 
 
 
-def training():
+def ft_fit():
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
     labels, epochs = fetch_events(raw)
@@ -162,7 +162,7 @@ def training():
     print("model saved to final_model.joblib")
 
 
-def predict():
+def ft_predict():
     try:
         clf = load(PREDICT_MODEL)
     except FileNotFoundError as e:
@@ -183,7 +183,7 @@ def predict():
     print("Mean acc= ", np.mean(scores))
 
 
-def pipeline():
+def ft_pipeline():
     #raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
     #labels, epochs = fetch_events(filter_data(raw))
 
@@ -315,10 +315,10 @@ if __name__ == "__main__":
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
-    # training()
+    # ft_fit()
 
     # PREDICT_MODEL = "final_model.joblib"
     # SUBJECTS = [2]
-    # predict()
+    # ft_predict()
 
-    pipeline()
+    ft_pipeline()
