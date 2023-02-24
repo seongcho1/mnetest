@@ -1,6 +1,9 @@
 import numpy as np
 import os
 import mne
+
+import matplotlib
+matplotlib.use('qtagg')
 import matplotlib.pyplot as plt
 
 from mne.io import concatenate_raws, read_raw_edf

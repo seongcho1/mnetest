@@ -1,6 +1,9 @@
 import numpy as np
 import os
 import mne
+
+import matplotlib
+matplotlib.use('qtagg')
 import matplotlib.pyplot as plt
 
 from mne.io import concatenate_raws, read_raw_edf
@@ -25,11 +28,14 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch_events
 
 
-def ft_fit(SUBJECTS, RUNS):
+
+def ft_fit(SUBJECTS, RUNS, forceplot=False):
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
     labels, epochs = fetch_events(raw)
 
+    # spectrum = raw.compute_psd()
+    # p = spectrum.plot_topomap()
 
     epochs_train = epochs.copy().crop(tmin=1., tmax=2.)
 
@@ -81,17 +87,28 @@ def ft_fit(SUBJECTS, RUNS):
     dump(clf, "final_model.joblib")
     print("model saved to final_model.joblib")
 
+    return raw
 
 
 if __name__ == "__main__":
+
+    #%matplotlib qt5
+
     #DATA_DIR = "mne_data"
 
     RUNS1 = [6, 10, 14]  # motor imagery: hands vs feet
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
+    plt.ioff()
     SUBJECTS = [1]
-    ft_fit(SUBJECTS, RUNS)
+    raw = ft_fit(SUBJECTS, RUNS)
+
+    # plt.ion()
+    # fig = plt.figure(figsize=(4.2, 4.2))
+    # plt.plot(range(10), range(10))
+    plt.show()
+
 
     # PREDICT_MODEL = "final_model.joblib"
     # SUBJECTS = [2]

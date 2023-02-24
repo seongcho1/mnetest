@@ -2,6 +2,9 @@ import time
 import numpy as np
 import os
 import mne
+
+import matplotlib
+matplotlib.use('qtagg')
 import matplotlib.pyplot as plt
 
 from mne.io import concatenate_raws, read_raw_edf
@@ -40,15 +43,13 @@ def ft_predict(SUBJECTS, RUNS):
     # labels, epochs = fetch_events(filter_data(raw))
     epochs = epochs.get_data()
 
-    print("X shape= ", epochs.shape, "y shape= ", labels.shape)
+    print(f"X.shape= {epochs.shape}, y.shape={labels.shape}")
 
     scores = []
     for n in range(epochs.shape[0]):
         pred = clf.predict(epochs[n:n + 1, :, :])
-        print("pred= ", pred, "truth= ", labels[n:n + 1])
-        scores.append(1 - np.abs(pred[0] - labels[n:n + 1][0]))
-    print("Mean acc= ", np.mean(scores))
-
+        print(f"event={n:02d}, predict={pred}, label={labels[n:n + 1]}")
+        scores.append(pred[0] == labels[n:n + 1][0])
 
     end = time.perf_counter()
     exectime = end - start
@@ -57,8 +58,10 @@ def ft_predict(SUBJECTS, RUNS):
     if exectime < 0.001:
         exectime *= 1000
         unit = 'ms'
-
-    print(f"===(exec-time = {exectime:.3f} {unit})===")
+    print('='*42)
+    print(f"=     (clf.predict Mean-Acc ={np.mean(scores):.3f} )     =")
+    print(f"=     (clf.predict Exec-Time={exectime:.3f}{unit})     =")
+    print('='*42)
 
 
 if __name__ == "__main__":

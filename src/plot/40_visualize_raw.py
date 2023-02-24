@@ -53,7 +53,6 @@ print(raw.info['bads'])
 #raw.plot(overview_mode=True)
 picks = mne.pick_channels_regexp(raw.ch_names, regexp='EEG 05.')
 raw.plot(order=picks, n_channels=len(picks))
-exit()
 
 # %%
 # It may not be obvious when viewing this tutorial online, but by default, the

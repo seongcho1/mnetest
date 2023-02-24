@@ -1,6 +1,9 @@
 import numpy as np
 import os
 import mne
+
+import matplotlib
+matplotlib.use('qtagg')
 import matplotlib.pyplot as plt
 
 from mne.io import concatenate_raws, read_raw_edf
@@ -121,6 +124,8 @@ def ft_pipeline():
     plt.show()
     ####################
 
+    plt.ioff()
+
     lda_shrinkage.fit(csp.fit_transform(epochs_data_train, labels), labels)
     try:
         os.remove('model.joblib')
@@ -131,24 +136,25 @@ def ft_pipeline():
     # Prediction
 
     pivot = int(0.5 * len(epochs_data_train))
-
     clf = clf2
     clf = clf.fit(epochs_data_train[:pivot], labels[:pivot])
 
-    try :
+    try:
         p = clf.named_steps["CSP"].plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
-    except AttributeError:
-        print("Method not implemented")
+    except Exception as e:
+        print(f"Exception: {e}")
 
-    print("X shape= ", epochs_data_train[pivot:].shape, "y shape= ", labels[pivot:].shape)
+    print(f"X.shape={epochs_data_train[pivot:].shape}, y.shape={labels[pivot:].shape}")
 
     scores = []
     for n in range(epochs_data_train[pivot:].shape[0]):
         pred = clf.predict(epochs_data_train[pivot:][n:n + 1, :, :])
-        print("n=", n, "pred= ", pred, "truth= ", labels[pivot:][n:n + 1])
-        scores.append(1 - np.abs(pred[0] - labels[pivot:][n:n + 1][0]))
-    print("Mean acc= ", np.mean(scores))
-    pass
+        print(f"event={n:02d}, predict={pred}, label={labels[pivot:][n:n + 1]}")
+        scores.append(pred[0] == labels[pivot:][n:n + 1][0])
+
+    print('='*42)
+    print(f"=     (clf.predict Mean-Acc ={np.mean(scores):.3f} )     =")
+    print('='*42)
 
 
 if __name__ == "__main__":
@@ -164,5 +170,6 @@ if __name__ == "__main__":
     # PREDICT_MODEL = "final_model.joblib"
     # SUBJECTS = [2]
     # ft_predict()
-
+    plt.ioff()
     ft_pipeline()
+    plt.show()
