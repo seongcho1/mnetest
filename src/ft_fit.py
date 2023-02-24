@@ -25,10 +25,11 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch_events
 
 
-def ft_fit():
+def ft_fit(SUBJECTS, RUNS):
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
     labels, epochs = fetch_events(raw)
+
 
     epochs_train = epochs.copy().crop(tmin=1., tmax=2.)
 
@@ -89,8 +90,8 @@ if __name__ == "__main__":
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
-    SUBJECTS = [42]
-    ft_fit()
+    SUBJECTS = [1]
+    ft_fit(SUBJECTS, RUNS)
 
     # PREDICT_MODEL = "final_model.joblib"
     # SUBJECTS = [2]

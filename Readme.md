@@ -238,3 +238,22 @@ eigen_values, eigen_vectors =scipy.linalg.eigh(S1, S1+S2)
 eigenvalues=[0.1978  0.80471], eigenvectors.shape=(2, 2)
 ----------------------------------------
 ```
+
+
+## to-do list
+
+```
+  - Preprocessing
+    - being shown in the video
+    - additional filter (exclude extracting frequencies)
+
+  - Classification
+    - Predict: uses sklearn validation tools?
+
+  - Implimentatino
+    - Score: Over 75% add a point for every 3%. current score is 0
+    # 1,   2,     3,    4,     5,   42
+    # 0.8, 0.867, 0.73, 0.667, 0.8, 0.867
+    # 0.766
+
+```
