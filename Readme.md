@@ -245,8 +245,16 @@ eigenvalues=[0.1978  0.80471], eigenvectors.shape=(2, 2)
 ```
   - Preprocessing
     - being shown in the video
-      . men-tools says it provides the functino, but not working.
-      . needs to figure out to do it
+      . using men-tools
+
+          import matplotlib
+          matplotlib.use('qtagg')
+
+          import matplotlib.pyplot as plt
+          plt.ioff()
+          ...
+          plt.show()
+
     - making an additional filter is not necessary
       . The feature extraction section is just to check that
         the significative frequencies for a motor imagery task are
