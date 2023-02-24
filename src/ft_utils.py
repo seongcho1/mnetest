@@ -43,7 +43,10 @@ def filter_data(raw, montage=make_standard_montage('standard_1020')):
 
     data_filter = raw.copy()
     #data_filter.set_montage(montage)
+
     data_filter.filter(7, 30, fir_design='firwin', skip_by_annotation='edge')
+    #data_filter.filter(8, 40, fir_design='firwin', skip_by_annotation='edge')
+
     p = mne.viz.plot_raw(data_filter, scalings={"eeg": 75e-6})
     return data_filter
 

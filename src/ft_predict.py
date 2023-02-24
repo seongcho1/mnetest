@@ -68,17 +68,20 @@ if __name__ == "__main__":
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
-    SUBJECTS = [42]
+    SUBJECTS = [6]
 
-    for s in SUBJECTS:
-        ft_fit([s], RUNS)
+    ft_fit(SUBJECTS, RUNS)
 
-        PREDICT_MODEL = "final_model.joblib"
-        #SUBJECTS = [41]
-        ft_predict([s], RUNS)
+    PREDICT_MODEL = "final_model.joblib"
+    #SUBJECTS = [41]
+    ft_predict(SUBJECTS, RUNS)
 
-        # ft_pipeline()
+    # ft_pipeline()
 
-    # 1,   2,     3,    4,     5,   42
-    # 0.8, 0.867, 0.73, 0.667, 0.8, 0.867
-    # 0.766
+    # 1,   2,     3,    4,     5,   6,     42
+    #-----------------------------------------------------------------
+    # 0.8, 0.867, 0.73, 0.667, 0.8, 0.8    0.867   #with filter(7, 30)
+    #  avg of [1, 2, 3, 4] = 0.766
+    #-----------------------------------------------------------------
+    # 0.82 0.756  0.711 0.644  0.822 0.844 0.867  #with filter(8, 40)
+    #  avg of [1, 2, 3, 4] = 0.732
