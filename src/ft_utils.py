@@ -22,6 +22,19 @@ from joblib import dump, load
 import copy as cp
 from sklearn.base import BaseEstimator, TransformerMixin
 
+
+def my_custom_loss_func(y_true, y_pred):
+    # scores = []
+    # for yt, yp in zip(y_true, y_pred):
+    #     v = 1 if yt == yp else 0
+    #     scores.append(v)
+
+    #scores = [1 if vt == vp else 0 for vt, vp in zip(y_true, y_pred)]
+    #print(scores, np.sum(scores), len(scores), np.sum(scores)/ len(scores), np.mean(scores))
+    scores = [y_true == y_pred]
+    return -1.0 * np.mean(scores)  # why???????
+
+
 def fetch_events(data_filtered, tmin=-1., tmax=4.):
     print("\n" + ">"*42*2)
     print(">>>fetch_events(data_filtered, tmin=-1., tmax=4.)<<<")
@@ -113,3 +126,4 @@ def raw_filenames(subjects, runs):
       subject_raw_fnames = eegbci.load_data(subject, runs)
       raw_fnames.extend(subject_raw_fnames)
     return raw_fnames
+

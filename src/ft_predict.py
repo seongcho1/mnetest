@@ -25,9 +25,13 @@ from joblib import dump, load
 
 import copy as cp
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.metrics import make_scorer
 
-from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch_events
+from ft_utils import raw_filenames, fetch_data, prepare_data, \
+                     filter_data, fetch_events, \
+                     my_custom_loss_func
 from ft_fit import ft_fit
+
 
 def ft_predict(SUBJECTS, RUNS):
     try:
@@ -45,6 +49,9 @@ def ft_predict(SUBJECTS, RUNS):
 
     print(f"X.shape= {epochs.shape}, y.shape={labels.shape}")
 
+    score = make_scorer(my_custom_loss_func, greater_is_better=False)
+
+
     scores = []
     for n in range(epochs.shape[0]):
         pred = clf.predict(epochs[n:n + 1, :, :])
@@ -58,9 +65,11 @@ def ft_predict(SUBJECTS, RUNS):
     if exectime < 0.001:
         exectime *= 1000
         unit = 'ms'
+
     print('='*42)
-    print(f"=     (clf.predict Mean-Acc ={np.mean(scores):.3f} )     =")
-    print(f"=     (clf.predict Exec-Time={exectime:.3f}{unit})     =")
+    print(f"=     (clf.predict Mean-Accuracy={np.mean(scores):.3f} )     =")
+    print(f"=     (clf.predict Mean-Accuracy={score(clf, epochs, labels):.3f} )     =")
+    print(f"=     (clf.predict Exec-Time    ={exectime:.3f}{unit})     =")
     print('='*42)
 
 

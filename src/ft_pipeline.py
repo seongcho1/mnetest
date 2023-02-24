@@ -24,9 +24,11 @@ from joblib import dump, load
 
 import copy as cp
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.metrics import make_scorer
 
-from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch_events
-
+from ft_utils import raw_filenames, fetch_data, prepare_data, \
+                     filter_data, fetch_events, \
+                     my_custom_loss_func
 
 def ft_pipeline():
     #raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
@@ -122,9 +124,8 @@ def ft_pipeline():
     plt.title('Classification score over time')
     plt.legend(loc='lower right')
     plt.show()
-    ####################
-
     plt.ioff()
+    ####################
 
     lda_shrinkage.fit(csp.fit_transform(epochs_data_train, labels), labels)
     try:
@@ -146,6 +147,8 @@ def ft_pipeline():
 
     print(f"X.shape={epochs_data_train[pivot:].shape}, y.shape={labels[pivot:].shape}")
 
+    score = make_scorer(my_custom_loss_func, greater_is_better=False)
+
     scores = []
     for n in range(epochs_data_train[pivot:].shape[0]):
         pred = clf.predict(epochs_data_train[pivot:][n:n + 1, :, :])
@@ -153,7 +156,8 @@ def ft_pipeline():
         scores.append(pred[0] == labels[pivot:][n:n + 1][0])
 
     print('='*42)
-    print(f"=     (clf.predict Mean-Acc ={np.mean(scores):.3f} )     =")
+    print(f"=     (clf.predict Mean-Accuracy={np.mean(scores):.3f} )     =")
+    print(f"=     (clf.predict Mean-Accuracy={score(clf, epochs_data_train[pivot:], labels[pivot:]):.3f} )     =")
     print('='*42)
 
 
