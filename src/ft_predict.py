@@ -51,7 +51,6 @@ def ft_predict(SUBJECTS, RUNS):
 
     score = make_scorer(my_custom_loss_func, greater_is_better=False)
 
-
     scores = []
     for n in range(epochs.shape[0]):
         pred = clf.predict(epochs[n:n + 1, :, :])
