@@ -245,12 +245,14 @@ eigenvalues=[0.1978  0.80471], eigenvectors.shape=(2, 2)
 ```
   - Preprocessing
     - being shown in the video
-    - additional filter (exclude extracting frequencies)
+      men-tools says it provides the functino, but not working. needs to figure out to do it
+    - making an additional filter is not necessary
+      The feature extraction section is just to check that the significative frequencies for a motor imagery task are kept (~8-40Hz)
 
   - Classification
     - Predict: uses sklearn validation tools?
 
-  - Implimentatino
+  - Implementation
     - Score: Over 75% add a point for every 3%. current score is 0
     # 1,   2,     3,    4,     5,   42
     # 0.8, 0.867, 0.73, 0.667, 0.8, 0.867
