@@ -110,7 +110,7 @@ def replay(eeg):
         ah2.set_xlim(interval[start], interval[start+visible])
 
         # control speed of moving time-series
-        start += 25
+        start += 2500
 
         fig.canvas.draw()
         fig.canvas.flush_events()
