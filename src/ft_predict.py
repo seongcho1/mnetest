@@ -88,7 +88,7 @@ if __name__ == "__main__":
     #$SUBJECTS = [3]
     SUBJECTS = []  # [1, 2, 3, 4] # [7,8,9,10,11,12, 42]
     for i in range(6):
-        x = randint(1, 109+1)
+        x = randint(1, 109)
         SUBJECTS.append(x)
 
     scores_ = []
