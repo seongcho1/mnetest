@@ -50,8 +50,8 @@ def ft_fit(SUBJECTS, RUNS, forceplot=False):
 
     # Assemble a classifier
     lda_shrinkage = LDA(solver='lsqr', shrinkage='auto')
-    csp = FT_CSP(n_components=4, reg=None, log=True, norm_trace=False)
-    #csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
+    #csp = FT_CSP(n_components=4, reg=None, log=True, norm_trace=False)
+    csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
 
     # # csp.plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
     # print('X=epochs_data_train, y=labels')
