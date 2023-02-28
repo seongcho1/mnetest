@@ -13,6 +13,13 @@ from ft_fit import ft_fit
 
 if __name__ == "__main__":
 
+
+    df = pd.read_csv('../score.csv')
+    print(df.head(10))
+    print(df["score"].mean())
+
+    exit()
+
     #%matplotlib qt5
 
     #DATA_DIR = "mne_data"
