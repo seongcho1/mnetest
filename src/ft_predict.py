@@ -81,8 +81,10 @@ def ft_predict(SUBJECTS, RUNS):
 if __name__ == "__main__":
     #DATA_DIR = "mne_data"
 
-    RUNS1 = [6, 10, 14]  # motor imagery: hands vs feet
+    RUNS1 = [3, 7, 11]  # motor: left hand vs right hand
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
+    RUNS3 = [5, 9, 13]  # motor: hands vs feet
+    RUNS4 = [6, 10, 14] # motor imagery: hands vs feet
     RUNS = RUNS2
 
     #$SUBJECTS = [3]
