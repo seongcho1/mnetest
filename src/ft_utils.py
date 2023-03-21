@@ -23,6 +23,11 @@ import copy as cp
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
+
+# to-do list to improve
+# 1. baseline correction
+# https://neuro.inf.unibe.ch/AlgorithmsNeuroscience/Tutorial_files/BaselineCorrection.html
+
 def my_custom_loss_func(y_true, y_pred):
     # scores = []
     # for yt, yp in zip(y_true, y_pred):
@@ -35,16 +40,28 @@ def my_custom_loss_func(y_true, y_pred):
     return -1.0 * np.mean(scores)  # why???????
 
 
-def fetch_events(data_filtered, tmin=-1., tmax=4.):
+#def fetch_events(data_filtered, tmin=-1., tmax=4.):
+def fetch_events(data_filtered, tmin=-0.2, tmax=0.5):
     print("\n" + ">"*42*2)
-    print(">>>fetch_events(data_filtered, tmin=-1., tmax=4.)<<<")
+    print(f">>>fetch_events(data_filtered, tmin={tmin}, tmax={tmax})<<<")
     print("<"*42*2 + "\n")
 
     event_ids = dict(T1=0, T2=1)
     events, _ = events_from_annotations(data_filtered, event_id=event_ids)
     picks = mne.pick_types(data_filtered.info, meg=False, eeg=True, stim=False, eog=False, exclude='bads')
+
+    baseline = (None, 0)  # means from the first instant to t = 0
     epochs = mne.Epochs(data_filtered, events, event_ids, tmin, tmax, proj=True,
-                        picks=picks, baseline=None, preload=True)
+                        picks=picks,
+                        #baseline=baseline,
+                        baseline=(-0.1, 0),
+                        #baseline=None,
+                        preload=True)
+
+    # epochs_wo_bc = cp.deepcopy(epochs)
+    # inteval = (-1, 1)
+    # bc_epochs = epochs.apply_baseline(inteval)
+
     labels = epochs.events[:, -1]
     return labels, epochs
 

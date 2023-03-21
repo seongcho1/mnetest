@@ -30,41 +30,64 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, \
                      filter_data, fetch_events, \
                      my_custom_loss_func
 
-def ft_pipeline():
-    #raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames())))
-    #labels, epochs = fetch_events(filter_data(raw))
 
-    raw_fnames = raw_filenames(SUBJECTS, RUNS)
-    raw = fetch_data(raw_fnames, RUNS)
-    raw = prepare_data(raw)
-    raw = filter_data(raw)
-    labels, epochs = fetch_events(raw)
+from ft_fit import ft_fit
+from ft_predict import ft_predict
 
-    epochs_data_train = epochs.get_data()
+def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5):
+
+    raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
+    labels, epochs = fetch_events(raw, tmin=tmin, tmax=tmax)
+
+    epochs_train = epochs.copy().crop(tmin=-0.2, tmax=0.5)
+    #epochs_data = epochs.get_data()
+    epochs_data_train = epochs_train.get_data()
+    #epochs_data_train = epochs.get_data()
     cv = ShuffleSplit(10, test_size=0.2, random_state=42)
+
+
+    #####################
+
+
+    ###################################
+
+
 
     # Assemble a classifier
     lda = LDA()
     lda_shrinkage = LDA(solver='lsqr', shrinkage='auto')
     svc = SVC(gamma='auto')
 
-    #csp = CSP()
-    #csp = CSP(n_components=4, reg=None, log=None, norm_trace=False)
-    csp = FT_CSP(n_components=4, reg=None, log=None, norm_trace=False)
-
+    csp = FT_CSP(n_components=4, reg=None, log=True, norm_trace=False)
+    #csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
 
     #classifiers
-    clf1 = Pipeline([('CSP', csp), ('LDA', lda)])
-    scores_lda = cross_val_score(clf1, epochs_data_train, labels, cv=cv, n_jobs=1)
+    # clf1 = Pipeline([('CSP', csp), ('LDA', lda)])
+    # scores_lda = cross_val_score(clf1, epochs_data_train, labels, cv=cv, n_jobs=1)
+    # mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
+
+    # clf2 = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
+    # scores_ldashrinkage = cross_val_score(clf2, epochs_data_train, labels, cv=cv, n_jobs=1)
+    # mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
+
+    # clf3 = Pipeline([('CSP', csp), ('SVC', svc)])
+    # scores_svc = cross_val_score(clf3, epochs_data_train, labels, cv=cv, n_jobs=1)
+    # mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
+
+    ###############################
+    epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
+    clf1 = Pipeline([('LDA', lda)])
+    scores_lda = cross_val_score(clf1, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
     mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
 
-    clf2 = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
-    scores_ldashrinkage = cross_val_score(clf2, epochs_data_train, labels, cv=cv, n_jobs=1)
+    clf2 = Pipeline([('LDA', lda_shrinkage)])
+    scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
     mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
 
-    clf3 = Pipeline([('CSP', csp), ('SVC', svc)])
-    scores_svc = cross_val_score(clf3, epochs_data_train, labels, cv=cv, n_jobs=1)
+    clf3 = Pipeline([('SVC', svc)])
+    scores_svc = cross_val_score(clf3, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
     mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
+    ###############################
 
     # Printing the results
     class_balance = np.mean(labels == labels[0])
@@ -95,12 +118,16 @@ def ft_pipeline():
 
     scores_windows = []
 
-    for train_idx, test_idx in cv.split(epochs_data_train):
+    #for train_idx, test_idx in cv.split(epochs_data_train):
+    for train_idx, test_idx in cv.split(epochs_data_train_csp):
         print(f"train_idx={train_idx}")
         y_train, y_test = labels[train_idx], labels[test_idx]
 
-        X_train = csp.fit_transform(epochs_data_train[train_idx], y_train)
-        X_test = csp.transform(epochs_data_train[test_idx])
+        # X_train = csp.fit_transform(epochs_data_train[train_idx], y_train)
+        # X_test = csp.transform(epochs_data_train[test_idx])
+
+        X_train = epochs_data_train_csp[train_idx]
+        X_test = epochs_data_train_csp[test_idx]
 
         # fit classifier
         lda_shrinkage.fit(X_train, y_train)
@@ -135,10 +162,33 @@ def ft_pipeline():
     dump(lda_shrinkage, 'model.joblib')
 
     # Prediction
+    # pivot = int(0.5 * len(epochs_data_train))
+    # clf = clf2
+    # clf = clf.fit(epochs_data_train_csp[:pivot], labels[:pivot])
+
+    # try:
+    #     p = clf.named_steps["CSP"].plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
+    # except Exception as e:
+    #     print(f"Exception: {e}")
+
+    # print(f"X.shape={epochs_data_train[pivot:].shape}, y.shape={labels[pivot:].shape}")
+
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+
+    # scores = []
+    # for n in range(epochs_data_train[pivot:].shape[0]):
+    #     pred = clf.predict(epochs_data_train[pivot:][n:n + 1, :, :])
+    #     print(f"event={n:02d}, predict={pred}, label={labels[pivot:][n:n + 1]}")
+    #     scores.append(pred[0] == labels[pivot:][n:n + 1][0])
+
+    # print('='*42)
+    # print(f"=     (clf.predict Mean-Accuracy={np.mean(scores):.3f} )     =")
+    # print(f"=     (clf.predict Mean-Accuracy={score(clf, epochs_data_train[pivot:], labels[pivot:]):.3f} )     =")
+    # print('='*42)
 
     pivot = int(0.5 * len(epochs_data_train))
-    clf = clf2
-    clf = clf.fit(epochs_data_train[:pivot], labels[:pivot])
+    clf = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
+    #clf = clf.fit(epochs_data_train_csp[:pivot], labels[:pivot])
 
     try:
         p = clf.named_steps["CSP"].plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
@@ -161,19 +211,48 @@ def ft_pipeline():
     print('='*42)
 
 
+    # pivot = int(0.5 * len(epochs_data_train))
+    # clf = clf2
+    # clf = clf.fit(epochs_data_train_csp[:pivot], labels[:pivot])
+
+    # try:
+    #     p = clf.named_steps["CSP"].plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
+    # except Exception as e:
+    #     print(f"Exception: {e}")
+
+    # print(f"X.shape={epochs_data_train_csp[pivot:].shape}, y.shape={labels[pivot:].shape}")
+
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+
+    # scores = []
+    # for n in range(epochs_data_train_csp[pivot:].shape[0]):
+    #     pred = clf.predict(epochs_data_train_csp[pivot:][n:n + 1, :])
+    #     print(f"event={n:02d}, predict={pred}, label={labels[pivot:][n:n + 1]}")
+    #     scores.append(pred[0] == labels[pivot:][n:n + 1][0])
+
+    # print('='*42)
+    # print(f"=     (clf.predict Mean-Accuracy={np.mean(scores):.3f} )     =")
+    # print(f"=     (clf.predict Mean-Accuracy={score(clf, epochs_data_train_csp[pivot:], labels[pivot:]):.3f} )     =")
+    # print('='*42)
+
+
 if __name__ == "__main__":
     #DATA_DIR = "mne_data"
 
-    RUNS1 = [6, 10, 14]  # motor imagery: hands vs feet
+    RUNS1 = [3, 7, 11]  # motor: left hand vs right hand
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
+    RUNS3 = [5, 9, 13]  # motor: hands vs feet
+    RUNS4 = [6, 10, 14] # motor imagery: hands vs feet
     RUNS = RUNS2
+    tmin = -0.2  # start of each epoch (200ms before the trigger)
+    tmax = 0.5  # end of each epoch (500ms after the trigger)
 
-    SUBJECTS = [42]
+    SUBJECTS = [13]
     # ft_fit()
 
     # PREDICT_MODEL = "final_model.joblib"
     # SUBJECTS = [2]
     # ft_predict()
     plt.ioff()
-    ft_pipeline()
+    ft_pipeline(SUBJECTS, RUNS, tmin=tmin, tmax=tmax)
     plt.show()

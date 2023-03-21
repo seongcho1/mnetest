@@ -19,6 +19,8 @@ https://braindecode.org/stable/auto_examples/plot_mne_dataset_example.html#sphx-
 
 # Tutorials
 
+https://neuro.inf.unibe.ch/AlgorithmsNeuroscience/Tutorial_files/BaselineCorrection.html
+
 
 https://mne.tools/1.0/auto_tutorials/index.html
 

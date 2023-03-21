@@ -2,7 +2,7 @@ import time
 import numpy as np
 import os
 import mne
-from random import randint
+from random import seed ,randint
 
 import matplotlib
 matplotlib.use('qtagg')
@@ -34,7 +34,7 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, \
 from ft_fit import ft_fit
 
 
-def ft_predict(SUBJECTS, RUNS):
+def ft_predict(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, PREDICT_MODEL = "final_model.joblib"):
     try:
         clf = load(PREDICT_MODEL)
     except FileNotFoundError as e:
@@ -44,7 +44,7 @@ def ft_predict(SUBJECTS, RUNS):
 
     # Fetch Data
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
-    labels, epochs = fetch_events(raw)
+    labels, epochs = fetch_events(raw, tmin=tmin, tmax=tmax)
     # labels, epochs = fetch_events(filter_data(raw))
     epochs = epochs.get_data()
 
@@ -86,9 +86,16 @@ if __name__ == "__main__":
     RUNS3 = [5, 9, 13]  # motor: hands vs feet
     RUNS4 = [6, 10, 14] # motor imagery: hands vs feet
     RUNS = RUNS2
+    tmin = -0.2  # start of each epoch (200ms before the trigger)
+    tmax = 0.5  # end of each epoch (500ms after the trigger)
+
 
     #$SUBJECTS = [3]
     SUBJECTS = []  # [1, 2, 3, 4] # [7,8,9,10,11,12, 42]
+
+    # seed(4)
+    # for i in range(4):
+    #seed(3)
     for i in range(6):
         x = randint(1, 109)
         SUBJECTS.append(x)
@@ -96,12 +103,12 @@ if __name__ == "__main__":
     scores_ = []
     predict_ = None
 
-    #ft_fit(SUBJECTS, RUNS)
+    #ft_fit([SUBJECTS], RUNS, tmin=tmin, tmax=tmax)
     for SUBJECT in SUBJECTS:
-        ft_fit([SUBJECT], RUNS)
+        ft_fit([SUBJECT], RUNS, tmin=tmin, tmax=tmax)
         PREDICT_MODEL = "final_model.joblib"
         #SUBJECTS = [41]
-        predict_, score_ = ft_predict([SUBJECT], RUNS)
+        predict_, score_ = ft_predict([SUBJECT], RUNS, tmin=tmin, tmax=tmax)
         scores_.append(round(score_, 2))
     print("subjects:", SUBJECTS)
     print("score   :", scores_)

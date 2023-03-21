@@ -29,15 +29,17 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch
 
 
 
-def ft_fit(SUBJECTS, RUNS, forceplot=False):
+def ft_fit(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, forceplot=False):
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
-    labels, epochs = fetch_events(raw)
+    labels, epochs = fetch_events(raw, tmin=tmin, tmax=tmax)
 
     # spectrum = raw.compute_psd()
     # p = spectrum.plot_topomap()
 
-    epochs_train = epochs.copy().crop(tmin=1., tmax=2.)
+    #epochs_train = epochs.copy().crop(tmin=1., tmax=2.)
+    epochs_train = epochs.copy().crop(tmin=-0.2, tmax=0.5)
+    #epochs_train = epochs.copy().crop(tmin=tmin, tmax=tmax)
 
     epochs_data = epochs.get_data()
     print(f'epochs_data.shape={epochs_data.shape}')
@@ -45,13 +47,13 @@ def ft_fit(SUBJECTS, RUNS, forceplot=False):
     print(f'epochs_data_train.shape={epochs_data_train.shape}')
 
     # Define a monte-carlo cross-validation generator (reduce variance):
-    cv = ShuffleSplit(10, test_size=0.2, random_state=42)
+    cv = ShuffleSplit(1, test_size=0.2, random_state=42)
     #cv_split = cv.split(epochs_data_train)
 
     # Assemble a classifier
     lda_shrinkage = LDA(solver='lsqr', shrinkage='auto')
-    #csp = FT_CSP(n_components=4, reg=None, log=True, norm_trace=False)
-    csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
+    csp = FT_CSP(n_components=4, reg=None, log=True, norm_trace=False)
+    #csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
 
     # # csp.plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
     # print('X=epochs_data_train, y=labels')
@@ -65,9 +67,15 @@ def ft_fit(SUBJECTS, RUNS, forceplot=False):
 
     print('# Use scikit-learn Pipeline with cross_val_score function')
     clf = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
+    # scores_ldashrinkage = cross_val_score(clf, epochs_data_train, labels, cv=cv, n_jobs=1)
+    # mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
 
-    scores_ldashrinkage = cross_val_score(clf, epochs_data_train, labels, cv=cv, n_jobs=1)
+    ###############################
+    epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
+    clf2 = Pipeline([('LDA', lda_shrinkage)])
+    scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
     mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
+    ###############################
 
     print('# Printing the results')
     class_balance = np.mean(labels == labels[0])
@@ -100,9 +108,12 @@ if __name__ == "__main__":
     RUNS2 = [4, 8, 12]  # motor imagery: left hand vs right hand
     RUNS = RUNS2
 
+    tmin = -0.2  # start of each epoch (200ms before the trigger)
+    tmax = 0.5  # end of each epoch (500ms after the trigger)
+
     plt.ioff()
-    SUBJECTS = [1]
-    raw = ft_fit(SUBJECTS, RUNS)
+    SUBJECTS = [13]
+    raw = ft_fit(SUBJECTS, RUNS, tmin=tmin, tmax=tmax)
 
     # plt.ion()
     # fig = plt.figure(figsize=(4.2, 4.2))
