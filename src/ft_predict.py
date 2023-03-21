@@ -34,7 +34,7 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, \
 from ft_fit import ft_fit
 
 
-def ft_predict(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, PREDICT_MODEL = "final_model.joblib"):
+def ft_predict(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, PREDICT_MODEL="final_model.joblib"):
     try:
         clf = load(PREDICT_MODEL)
     except FileNotFoundError as e:
@@ -95,29 +95,58 @@ if __name__ == "__main__":
 
     # seed(4)
     # for i in range(4):
-    #seed(3)
+    # seed(1)
     for i in range(6):
         x = randint(1, 109)
         SUBJECTS.append(x)
 
+    #SUBJECTS = [2, 51, 78] #bad
+
+    # SUBJECTS = [46, 80]  # [1, 2, 3, 4] # [7,8,9,10,11,12, 42]
+    # SUBJECTS = [1, 3, 5, 46, 80]  # [1, 2, 3, 4] # [7,8,9,10,11,12, 42]
+
+    # #SUBJECTS = [i + 1 for i in range(100, 109)]
+
+    # SUBJECTS=[ 1,  3,  4,  8,  9, 12, 13, 15, 17, 18, 19, 20,
+    #           21, 22, 25, 26, 36, 37, 40,
+    #           41, 42, 46, 47, 48, 50, 51, 53, 54,
+    #           61, 62, 63, 68, 71, 73, 77, 80,
+    #           83, 84, 85, 86, 87, 90, 93, 98, 100,
+    #           101, 102, 103, 104, 105]
+
+    # SUBJECTS=[9, 15, 17, 19, #13,
+    #           #21, 40,
+    #           #48, 53, #41, 42, 46, 47, 50, 51,
+    #           ]
+
+    # idx = []
+    # for i in range(6):
+    #     x = randint(0, 49)
+    #     idx.append(x)
+    # SUBJECTS = [SUBJECTS1[id] for id in idx]
+
     scores_ = []
     predict_ = None
 
-    #ft_fit([SUBJECTS], RUNS, tmin=tmin, tmax=tmax)
+    #ft_fit(SUBJECTS, RUNS, tmin=tmin, tmax=tmax)
+    # SUBJECTS = [i + 1 for i in range(0, 20)]
     for SUBJECT in SUBJECTS:
+        #RUNS = RUNS2
         ft_fit([SUBJECT], RUNS, tmin=tmin, tmax=tmax)
         PREDICT_MODEL = "final_model.joblib"
         #SUBJECTS = [41]
-        predict_, score_ = ft_predict([SUBJECT], RUNS, tmin=tmin, tmax=tmax)
+        #RUNS = RUNS2
+        predict_, score_ = ft_predict([SUBJECT], RUNS, tmin=tmin, tmax=tmax, PREDICT_MODEL=PREDICT_MODEL)
         scores_.append(round(score_, 2))
-    print("subjects:", SUBJECTS)
+        print("42 predict\n", predict_)
+
+    print("\n\nsubjects:", SUBJECTS)
     print("score   :", scores_)
 
-    scores_.remove(max(scores_))
-    scores_.remove(min(scores_))
+    # scores_.remove(max(scores_))
+    # scores_.remove(min(scores_))
 
     print("mean score:", round(np.mean(scores_), 2))
-    print("42 predict\n", predict_)
 
 
 
