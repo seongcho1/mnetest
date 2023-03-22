@@ -34,7 +34,7 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, \
 from ft_fit import ft_fit
 from ft_predict import ft_predict
 
-def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5):
+def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, pipe_long=True):
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
     labels, epochs = fetch_events(raw, tmin=tmin, tmax=tmax)
@@ -43,7 +43,7 @@ def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5):
     #epochs_data = epochs.get_data()
     epochs_data_train = epochs_train.get_data()
     #epochs_data_train = epochs.get_data()
-    cv = ShuffleSplit(10, test_size=0.2, random_state=42)
+    cv = ShuffleSplit(5, test_size=0.2, random_state=42)
 
 
     #####################
@@ -62,32 +62,33 @@ def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5):
     #csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
 
     #classifiers
-    # clf1 = Pipeline([('CSP', csp), ('LDA', lda)])
-    # scores_lda = cross_val_score(clf1, epochs_data_train, labels, cv=cv, n_jobs=1)
-    # mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
+    if pipe_long is True:
+        clf1 = Pipeline([('CSP', csp), ('LDA', lda)])
+        scores_lda = cross_val_score(clf1, epochs_data_train, labels, cv=cv, n_jobs=1)
+        mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
 
-    # clf2 = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
-    # scores_ldashrinkage = cross_val_score(clf2, epochs_data_train, labels, cv=cv, n_jobs=1)
-    # mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
+        clf2 = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
+        scores_ldashrinkage = cross_val_score(clf2, epochs_data_train, labels, cv=cv, n_jobs=1)
+        mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
 
-    # clf3 = Pipeline([('CSP', csp), ('SVC', svc)])
-    # scores_svc = cross_val_score(clf3, epochs_data_train, labels, cv=cv, n_jobs=1)
-    # mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
+        clf3 = Pipeline([('CSP', csp), ('SVC', svc)])
+        scores_svc = cross_val_score(clf3, epochs_data_train, labels, cv=cv, n_jobs=1)
+        mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
+    else:
+        ###############################
+        epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
+        clf1 = Pipeline([('LDA', lda)])
+        scores_lda = cross_val_score(clf1, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
+        mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
 
-    ###############################
-    epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
-    clf1 = Pipeline([('LDA', lda)])
-    scores_lda = cross_val_score(clf1, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
-    mean_scores_lda, std_scores_lda = np.mean(scores_lda), np.std(scores_lda)
+        clf2 = Pipeline([('LDA', lda_shrinkage)])
+        scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
+        mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
 
-    clf2 = Pipeline([('LDA', lda_shrinkage)])
-    scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
-    mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
-
-    clf3 = Pipeline([('SVC', svc)])
-    scores_svc = cross_val_score(clf3, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
-    mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
-    ###############################
+        clf3 = Pipeline([('SVC', svc)])
+        scores_svc = cross_val_score(clf3, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
+        mean_scores_svc, std_scores_svc = np.mean(scores_svc), np.std(scores_svc)
+        ###############################
 
     # Printing the results
     class_balance = np.mean(labels == labels[0])
@@ -118,16 +119,23 @@ def ft_pipeline(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5):
 
     scores_windows = []
 
+
+    if pipe_long is True:
+        epochs_data_train_for = epochs_data_train
+    else:
+        epochs_data_train_for = epochs_data_train_csp
+
     #for train_idx, test_idx in cv.split(epochs_data_train):
-    for train_idx, test_idx in cv.split(epochs_data_train_csp):
+    for train_idx, test_idx in cv.split(epochs_data_train_for):
         print(f"train_idx={train_idx}")
         y_train, y_test = labels[train_idx], labels[test_idx]
 
-        # X_train = csp.fit_transform(epochs_data_train[train_idx], y_train)
-        # X_test = csp.transform(epochs_data_train[test_idx])
-
-        X_train = epochs_data_train_csp[train_idx]
-        X_test = epochs_data_train_csp[test_idx]
+        if pipe_long is True:
+            X_train = csp.fit_transform(epochs_data_train[train_idx], y_train)
+            X_test = csp.transform(epochs_data_train[test_idx])
+        else:
+            X_train = epochs_data_train_csp[train_idx]
+            X_test = epochs_data_train_csp[test_idx]
 
         # fit classifier
         lda_shrinkage.fit(X_train, y_train)

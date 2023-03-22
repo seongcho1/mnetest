@@ -29,7 +29,7 @@ from ft_utils import raw_filenames, fetch_data, prepare_data, filter_data, fetch
 
 
 
-def ft_fit(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, forceplot=False):
+def ft_fit(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, forceplot=False, pipe_long=True):
 
     raw = filter_data(raw=prepare_data(raw=fetch_data(raw_fnames=raw_filenames(SUBJECTS, RUNS), runs=RUNS)))
     labels, epochs = fetch_events(raw, tmin=tmin, tmax=tmax)
@@ -47,7 +47,7 @@ def ft_fit(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, forceplot=False):
     print(f'epochs_data_train.shape={epochs_data_train.shape}')
 
     # Define a monte-carlo cross-validation generator (reduce variance):
-    cv = ShuffleSplit(1, test_size=0.2, random_state=42)
+    cv = ShuffleSplit(5, test_size=0.2, random_state=42)
     #cv_split = cv.split(epochs_data_train)
 
     # Assemble a classifier
@@ -62,20 +62,37 @@ def ft_fit(SUBJECTS, RUNS, tmin=-0.2, tmax=0.5, forceplot=False):
     # print('X=epochs_data, y=labels')
     # csp.fit_transform(epochs_data, labels)
     # csp.plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
-
     # return
+
+    # cv.split looks okay
+    # print(f'epochs_data_train.shape={epochs_data_train.shape}, labels.shape={labels.shape}')
+    # Xsplits = cv.split(epochs_data_train)
+    # Ysplits = cv.split(labels)
+    # for Xsplit, Ysplit in zip(Xsplits, Ysplits):
+    #     print(f'type(Xsplit){type(Xsplit[0])}, type(Ysplit)={type(Ysplit[0])}')
+    #     print(f'Xsplit.shape={Xsplit[0].shape}, Ysplit.shape={Ysplit[0].shape}')
+    #     print(f'Xsplit={Xsplit[0]}, Ysplit={Ysplit[0]}')
+    # exit()
 
     print('# Use scikit-learn Pipeline with cross_val_score function')
     clf = Pipeline([('CSP', csp), ('LDA', lda_shrinkage)])
-    # scores_ldashrinkage = cross_val_score(clf, epochs_data_train, labels, cv=cv, n_jobs=1)
-    # mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
 
-    ###############################
-    epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
-    clf2 = Pipeline([('LDA', lda_shrinkage)])
-    scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp, labels, cv=cv, n_jobs=1)
-    mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
-    ###############################
+    if pipe_long is True:
+
+        scores_ldashrinkage = cross_val_score(clf, epochs_data_train, labels, cv=cv, n_jobs=1)
+        mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
+    else:
+        ###############################
+        epochs_data_train_csp = csp.fit_transform(epochs_data_train, labels)
+        #epochs_data_train_csp = csp.fit_transform(epochs_data_train[[22, 43, 30, 13, 21, 0, 10, 17, 24, 4, 41, 42, 1, 6, 11, 28, 25, 27, 16, 19, 37, 34, 35, 31],:,:],
+        #                                          labels[[22, 43, 30, 13, 21, 0, 10, 17, 24, 4, 41, 42, 1, 6, 11, 28, 25, 27, 16, 19, 37, 34, 35, 31]])
+        clf2 = Pipeline([('LDA', lda_shrinkage)])
+        scores_ldashrinkage = cross_val_score(clf2, epochs_data_train_csp,
+                                              labels,
+                                              #labels[[22, 43, 30, 13, 21, 0, 10, 17, 24, 4, 41, 42, 1, 6, 11, 28, 25, 27, 16, 19, 37, 34, 35, 31]],
+                                              cv=cv, n_jobs=1)
+        mean_scores_ldashrinkage, std_scores_ldashrinkage = np.mean(scores_ldashrinkage), np.std(scores_ldashrinkage)
+        ###############################
 
     print('# Printing the results')
     class_balance = np.mean(labels == labels[0])
