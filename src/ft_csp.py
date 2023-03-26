@@ -170,9 +170,9 @@ class FT_CSP(TransformerMixin, BaseEstimator):
         if self.PRT:
             print(f"eigenvectors2.shape={eigen_vectors.shape}")
 
+        #X1_CSP=np.dot(W.T,X1) and X2_CSP=np.dot(W.T,X2) of csp.py
         self.filters_ = eigen_vectors.T
         self.patterns_ = pinv2(eigen_vectors)
-
         pick_filters = self.filters_[:self.n_components]
         X = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
 
@@ -335,6 +335,7 @@ class FT_CSP(TransformerMixin, BaseEstimator):
 
         covs = []
         sample_weights = []
+        #S1=np.cov(X1) and S2=np.cov(X2) of csp.py
         for this_class in self._classes:
             cov, weight = self._concat_cov(X[y == this_class])
 
@@ -379,6 +380,7 @@ class FT_CSP(TransformerMixin, BaseEstimator):
             print(f"compare cov, {cov[0][0]}, cov1 {cov1[0][0]}, {abs(cov[0][0] - cov1[0][0]) < 0.0000001}")
         return cov, weight
 
+    #l,W=LA.eigh(S1, S1+S2) of csp.py
     def _decompose_covs(self, covs, sample_weights):
         from scipy import linalg
         n_classes = len(covs)
