@@ -84,8 +84,11 @@ if __name__ == '__main__':
     X1 = data1.T
     X2 = data2.T
 
+    # 1. Compute the covariance matrix
+    # 2. Solve the eigenvalue problem
     W,l,A=csp(X1,X2)
 
+    # 3. get CSP
     X1_CSP=np.dot(W.T,X1)
     X2_CSP=np.dot(W.T,X2)
 

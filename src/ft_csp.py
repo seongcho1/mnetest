@@ -145,23 +145,30 @@ class FT_CSP(TransformerMixin, BaseEstimator):
         if n_classes < 2:
             raise ValueError("n_classes must be >= 2.")
 
+        # 1. Compute the covariance matrix of each class
+        # S1=np.cov(X1) and S2=np.cov(X2) of csp.py
         covs, sample_weights = self._compute_covariance_matrices(X, y)
         if self.PRT:
             print(f"covs.shape={covs.shape}, sample_weight={sample_weights}")
 
+        # 2. Solve the eigenvalue problem S1·W = l·S2·W
+        # 2-1 l,W=LA.eigh(S1, S1+S2) of csp.py
         eigen_vectors, eigen_values = self._decompose_covs(covs,
                                                            sample_weights)
-
         if self.PRT:
             print(f"eigenvalues.shape={eigen_values.shape}, eigenvectors.shape={eigen_vectors.shape}\n")
             print(f"eigenvalues={eigen_values}, eigenvectors.shape={eigen_vectors.shape}\n")
 
-        #np.argsort(np.abs(eigen_values - 0.5))[::-1]
         if self.PRT:
             print(f"np.abs(eigen_values - 0.5)={np.abs(eigen_values - 0.5)}\n")
             print(f"np.argsort(np.abs(eigen_values - 0.5))={np.argsort(np.abs(eigen_values - 0.5))}\n")
             print(f"np.argsort(np.abs(eigen_values - 0.5))[::-1]={np.argsort(np.abs(eigen_values - 0.5))[::-1]}\n")
 
+        # 2-2 64 dimensions to n_components=4
+        # If 'mutual_info' order components by decreasing mutual information (in the two-class case this uses a simplification
+        # which orders components by decreasing absolute deviation of the eigenvalues from 0.5
+        # https://hal.science/hal-00602686/document
+        # ix = np.argsort(np.abs(eigen_values - 0.5))[::-1]
         ix = self._order_components(covs, sample_weights, eigen_vectors, eigen_values)
         if self.PRT:
             print(f"ix={ix}\n")
@@ -170,15 +177,15 @@ class FT_CSP(TransformerMixin, BaseEstimator):
         if self.PRT:
             print(f"eigenvectors2.shape={eigen_vectors.shape}")
 
-        #X1_CSP=np.dot(W.T,X1) and X2_CSP=np.dot(W.T,X2) of csp.py
         self.filters_ = eigen_vectors.T
         self.patterns_ = pinv2(eigen_vectors)
         pick_filters = self.filters_[:self.n_components]
+        # --- self.filters_ are CSP filters
+
+        # for the self.transform_into == 'average_power' option
         X = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
-
-        # compute features (mean power)
+        # compute features (mean band power)
         X = (X ** 2).mean(axis=2)
-
         # To standardize features
         self.mean_ = X.mean(axis=0)
         self.std_ = X.std(axis=0)
@@ -210,6 +217,8 @@ class FT_CSP(TransformerMixin, BaseEstimator):
                                'decomposition.')
 
         pick_filters = self.filters_[:self.n_components]
+
+        # 3. X1_CSP=np.dot(W.T,X1) and X2_CSP=np.dot(W.T,X2) of csp.py
         X = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
 
         # compute features (mean band power)
@@ -401,6 +410,10 @@ class FT_CSP(TransformerMixin, BaseEstimator):
             eigen_vectors[:, ii] /= np.sqrt(tmp)
         return eigen_vectors
 
+
+    #If 'mutual_info' order components by decreasing mutual information (in the two-class case this uses a simplification
+    # which orders components by decreasing absolute deviation of the eigenvalues from 0.5
+    #https://hal.science/hal-00602686/document
     def _order_components(self, covs, sample_weights, eigen_vectors, eigen_values):
         n_classes = len(self._classes)
         if n_classes > 2:
