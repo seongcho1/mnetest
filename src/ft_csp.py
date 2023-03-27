@@ -221,6 +221,7 @@ class FT_CSP(TransformerMixin, BaseEstimator):
         # 3. X1_CSP=np.dot(W.T,X1) and X2_CSP=np.dot(W.T,X2) of csp.py
         X = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
 
+        # https://raphaelvallat.com/bandpower.html
         # compute features (mean band power)
         if self.transform_into == 'average_power':
             X = (X ** 2).mean(axis=2)
