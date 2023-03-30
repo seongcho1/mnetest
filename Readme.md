@@ -118,8 +118,10 @@ Common Average Referencing (CAR) data -= data.mean() from [pdf/06Improving Prepr
 
 
 
+----------------------
 
-=======
+
+
 # data info
 
 
@@ -282,9 +284,11 @@ eigenvalues=[0.1978  0.80471], eigenvectors.shape=(2, 2)
 
 ```
 
-=====
-<<<<<<< HEAD
+
+
 ----------------------
+
+
 
 # eeg 뇌파
 
