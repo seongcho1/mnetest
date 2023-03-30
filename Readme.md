@@ -288,8 +288,6 @@ eigenvalues=[0.1978  0.80471], eigenvectors.shape=(2, 2)
 
 ----------------------
 
-
-
 # eeg 뇌파
 
 ## 뇌파
@@ -298,7 +296,30 @@ https://ko.wikipedia.org/wiki/뇌파
 ## 뉴런과 시냅스
 https://blog.naver.com/msnayana/80142231659
 
-신경세포 사이에 시냅스가 형성되어 신경전달물질을 분비, 이온채널에 부착, 이온채널 열림
+. 신경세포 사이에 시냅스가 형성되어 신경전달물질을 분비
+. 이온채널에 부착, 이온채널 열림, 전위차 발생
+. 전압이 생겨 전류가 흐르고, 이 전류가 전기장을 형성
+. 전기장의 변화는 자기장을 생성하고 다시 자기장의 변화는 전기장을 생성
+. 두피에 전극을 설치하면 10~50uV의 뇌파 신호 측정 가능
+
+
+## 뇌파 신호 처리하는 기술
+
+. 사건유발전위(ERP: Event-Related Potential): 특정 정보(영상, 음성, 소리, 수행명령 등)로 구성된 자극을 가한 후에 이 자극이 유발한 뇌의 전기적 활성정보가 포함된 신호
+. 사건유발전위는 자극이 제시된 시간을 기준으로 측정한 뇌파들을 평균화함으로써 자극과 무관한 뇌의 신호 부분은 제거하고 자극처리에 관여한 활동만을 추려낸 신호
+
+
+## 뇌파 해석 및 응용기술
+https://www.etri.re.kr/webzine/20170630/common/images/technology.zip
+
+. 보건 및 의료
+. 뉴로피드백 - Relaxation protocol, Attention protocol, Asymmetry protocol
+. 감성 ICT
+. 뉴로마케팅
+. bci
+. 뇌과학
+
+
 https://www.etri.re.kr/webzine/20170630/sub04.html
 
 ## markov blanket
@@ -396,3 +417,6 @@ self.filters_ = eigen_vectors.T
 n_components=4
 pick_filters = self.filters_[:self.n_components]
 ```
+
+
+
